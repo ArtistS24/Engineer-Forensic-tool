@@ -47,17 +47,7 @@ Installation & Usage
 
     sudo ./Engineer.sh
 
-Project Structure
-
-When automation is triggered, the tool organizes findings into a structured hierarchy:
-Plaintext
-
-``Engineer/
-      [Filename]_Automation/
-       Binwalk/
-       Volatility/
-       Carved_Files/
-       analysis_log.txt  <-- Complete audit trail``
+When automation is triggered, the tool organizes findings into a structured hierarchy.
 
 Developer: Denis Albin
 
