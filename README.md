@@ -48,7 +48,3 @@ Installation & Usage
     sudo ./Engineer.sh
 
 When automation is triggered, the tool organizes findings into a structured hierarchy.
-
-Developer: Denis Albin
-
-Contact: albindeniswork@gmail.com
