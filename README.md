@@ -52,12 +52,12 @@ Project Structure
 When automation is triggered, the tool organizes findings into a structured hierarchy:
 Plaintext
 
-Engineer/
+``Engineer/
   └── [Filename]_Automation/
       ├── Binwalk/
       ├── Volatility/
       ├── Carved_Files/
-      └── analysis_log.txt  <-- Complete audit trail
+      └── analysis_log.txt  <-- Complete audit trail``
 
 Developer: Denis Albin
 
