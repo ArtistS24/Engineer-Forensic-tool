@@ -34,7 +34,7 @@ Installation & Usage
     Clone the Repository:
     Bash
 
-    git clone https://github.com/yourusername/Engineer.git
+    git clone https://github.com/AkiraS24/Engineer-Forensic-tool/blob/main/Engineer.sh
     cd Engineer
 
     Permissions:
