@@ -53,11 +53,11 @@ When automation is triggered, the tool organizes findings into a structured hier
 Plaintext
 
 ``Engineer/
-  └── [Filename]_Automation/
-      ├── Binwalk/
-      ├── Volatility/
-      ├── Carved_Files/
-      └── analysis_log.txt  <-- Complete audit trail``
+      [Filename]_Automation/
+       Binwalk/
+       Volatility/
+       Carved_Files/
+       analysis_log.txt  <-- Complete audit trail``
 
 Developer: Denis Albin
 
