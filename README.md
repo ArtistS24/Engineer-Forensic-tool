@@ -1,10 +1,7 @@
-This is a professional, high-impact README.md tailored for GitHub. It highlights your technical proficiency, the automation logic, and the forensic depth of the tool while maintaining a clean, structured look.
-Engineer: Automated Digital Forensics Framework
-
 Engineer is a high-performance Bash-based CLI framework designed to automate the triage and analysis of digital evidence. It orchestrates industry-standard tools to perform deep-dive forensics on HDD images, Memory dumps (RAM), and suspicious files through a unified, interactive interface.
 Key Features
 
-    One-Click Triage: The Automate HDD and Memory module executes 10+ forensic tools sequentially, generating a comprehensive intelligence report in minutes.
+ One-Click Triage: The Automate HDD and Memory module executes 10+ forensic tools sequentially, generating a comprehensive intelligence report in minutes.
 
     Memory Forensics: Deep integration with Volatility 3 to extract running processes, network connections, and system registry hives.
 
