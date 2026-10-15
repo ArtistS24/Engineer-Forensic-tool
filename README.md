@@ -1,50 +1,80 @@
-Engineer is a high-performance Bash-based CLI framework designed to automate the triage and analysis of digital evidence. It orchestrates industry-standard tools to perform deep-dive forensics on HDD images, Memory dumps (RAM), and suspicious files through a unified, interactive interface.
-Key Features
+# Engineer: Automated Digital Forensics Framework
 
- One-Click Triage: The Automate HDD and Memory module executes 10+ forensic tools sequentially, generating a comprehensive intelligence report in minutes.
+A high-performance Bash-based forensic CLI framework engineered for automated digital evidence acquisition, memory triage, and file carving across HDD images and volatile memory dumps (RAM).
 
-    Memory Forensics: Deep integration with Volatility 3 to extract running processes, network connections, and system registry hives.
+Developed as part of the Magen Cyber Security curriculum (Class TMagen773634, Module NX212). Official research and project report included as [Engineer.pdf](Engineer.pdf).
 
-    Intelligent Data Carving: Automated file recovery and signature-based extraction using Binwalk, Foremost, and Scalpel.
+---
 
-    Artifact Extraction: Systematic discovery of human-readable data including passwords, URLs, emails, and PCAP files.
+## Capabilities
 
-    Auto-Environment Setup: Built-in dependency manager that verifies and installs missing forensic packages via apt.
+- **One-Click Triage Pipeline**: Executes 10+ forensic engines sequentially, builds a unified triage dossier, and packages findings into a portable evidence ZIP archive.
+- **Volatile Memory Analysis (Volatility 3)**: Automatic kernel profile identification (Windows & Linux), process trees (`pslist`), network connections (`netscan` / `sockstat`), malware heuristics (`malfind`), and registry hives (`printkey`).
+- **Data & Firmware Carving**: Signature-based recovery using Binwalk, Foremost, and Scalpel with automatic directory collision safeguards.
+- **PII & Artifact Harvesting**: Bulk Extractor integration recovering credentials, credit cards, emails, URLs, base64 streams, and raw network PCAPs.
+- **Deep Text & Steganography**: Automated regex keyword triage (`passwords`, `keys`, `tokens`, `api`, `sessions`) and Stegseek passphrase extraction.
+- **Auto-Environment Resolution**: Built-in package verification and apt resolver for zero-friction lab deployment.
 
-    Evidence Packaging: Persistent logging and structured directory management, with automated ZIP compression for portable evidence sharing.
+---
 
-Integrated Forensic Suite
+## Integrated Toolchain
 
-The framework provides a streamlined interface for:
+| Category | Tool | Function |
+|---|---|---|
+| **Memory Forensics** | Volatility 3 | RAM dump analysis, process execution, socket state |
+| **Firmware Analysis** | Binwalk | Signature scanning, entropy graphs, extraction |
+| **Feature Extraction** | Bulk Extractor | PII, network packets, AES keys, emails, URLs |
+| **File Carving** | Foremost / Scalpel | Header/footer carving from raw disk images |
+| **Steganography** | Stegseek | Fast passphrase cracking & hidden payload recovery |
+| **Metadata Analysis** | Exiftool | EXIF headers, timestamps, filesystem metadata |
+| **Low-Level Inspection** | Hexdump / DD | Raw byte offsets, selective partition carving |
 
-    Volatility 3: Advanced Memory Analysis.
+---
 
-    Binwalk: Firmware & Embedded File Analysis.
+## Installation & Usage
 
-    Bulk Extractor: Feature extraction (PII, Credentials, Network).
+### 1. Clone Repository
+```bash
+git clone https://github.com/ArtistS24/Engineer-Forensic-tool.git
+cd Engineer-Forensic-tool
+```
 
-    Exiftool: Metadata forensic analysis.
+### 2. Set Permissions
+```bash
+chmod +x Engineer.sh
+```
 
-    Stegseek: Steganography detection and cracking.
+### 3. Launch Framework (Root Required)
+```bash
+sudo ./Engineer.sh
+```
 
-    Foremost/Scalpel: File system carving and recovery.
+---
 
-Installation & Usage
+## Evidence Directory Structure
 
-    Clone the Repository:
-    Bash
+When automated triage completes, evidence is categorized into a structured hierarchy:
 
-    git clone https://github.com/AkiraS24/Engineer-Forensic-tool/blob/main/Engineer.sh
-    cd Engineer
+```
+Engineer/
+├── <target_image>/
+│   ├── Automation/
+│   │   ├── binwalk_<image>.log
+│   │   ├── exiftool_<image>.log
+│   │   ├── bulk_extractor/ (email.txt, ccn.txt, url.txt, packets.pcap)
+│   │   ├── Foremost/ (carved files by extension)
+│   │   ├── Scalpel/ (carved files)
+│   │   ├── strings_<image>.log (filtered keywords)
+│   │   ├── stegseek_<image>.log
+│   │   └── volatility/ (pslist, netscan, registry, malfind)
+│   └── <target_image>_Automation.zip
+```
 
-    Permissions:
-    Bash
+---
 
-    chmod +x Engineer.sh
+## Author & Academic Reference
 
-    Launch (Root Required):
-    Bash
-
-    sudo ./Engineer.sh
-
-When automation is triggered, the tool organizes findings into a structured hierarchy.
+- **Author**: Denis Albin ([@ArtistS24](https://github.com/ArtistS24))
+- **Student Code**: S24
+- **Class**: TMagen773634
+- **Project Report**: Included as [Engineer.pdf](Engineer.pdf) (NX212 Digital Forensics & Incident Response)
