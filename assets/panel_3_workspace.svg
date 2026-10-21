@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 268" width="100%" height="100%">
+  <rect width="900" height="268" rx="10" fill="#040609" />
+  <rect x="8" y="8" width="884" height="252" rx="8" fill="none" stroke="#c9934b" stroke-width="0.7" stroke-opacity="0.35" />
+
+  <g transform="translate(20, 20)">
+    <rect x="0" y="0" width="422" height="228" rx="6" fill="#080b11" stroke="#222c3c" stroke-width="1" />
+    <rect x="1" y="1" width="420" height="28" rx="5" fill="#10151f" />
+    <line x1="0" y1="29" x2="422" y2="29" stroke="#222c3c" stroke-width="1" />
+    <line x1="0" y1="6" x2="0" y2="24" stroke="#d4a359" stroke-width="3" />
+    <text x="14" y="19" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="700" fill="#d4a359" letter-spacing="1.0">INTERACTIVE MODULE WORKSPACE (-s FLAG)</text>
+    <text x="408" y="19" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="8.5" fill="#7d8a9e">[0x01 - 0x0A]</text>
+
+    <g font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#c9d1d9">
+      <text x="14" y="48" fill="#f0f6fc" font-weight="700">Engineer/&lt;target_file&gt;/</text>
+      <text x="14" y="65" fill="#6e7681">├──</text> <text x="42" y="65" fill="#82b8f0">Binwalk/</text> <text x="142" y="65" fill="#8b949e">quick_scan_*.log · entropy_graph_*.log</text>
+      <text x="14" y="81" fill="#6e7681">├──</text> <text x="42" y="81" fill="#82b8f0">Exiftool/</text> <text x="142" y="81" fill="#8b949e">exiftool_&lt;target&gt;.log</text>
+      <text x="14" y="97" fill="#6e7681">├──</text> <text x="42" y="97" fill="#82b8f0">Bulk_Extractor/</text> <text x="142" y="97" fill="#8b949e">email · ccn · url · packets.pcap · json</text>
+      <text x="14" y="113" fill="#6e7681">├──</text> <text x="42" y="113" fill="#82b8f0">Hexdump/</text> <text x="142" y="113" fill="#8b949e">hexdump_&lt;target&gt;.txt</text>
+      <text x="14" y="129" fill="#6e7681">├──</text> <text x="42" y="129" fill="#82b8f0">Foremost/</text> <text x="142" y="129" fill="#8b949e">audit.txt + carved type sub-folders</text>
+      <text x="14" y="145" fill="#6e7681">├──</text> <text x="42" y="145" fill="#82b8f0">Scalpel/</text> <text x="142" y="145" fill="#8b949e">audit.txt + rule-carved artifacts</text>
+      <text x="14" y="161" fill="#6e7681">├──</text> <text x="42" y="161" fill="#82b8f0">Strings/</text> <text x="142" y="161" fill="#8b949e">strings_&lt;target&gt;_&lt;filter&gt;.log</text>
+      <text x="14" y="177" fill="#6e7681">├──</text> <text x="42" y="177" fill="#82b8f0">DD/</text> <text x="142" y="177" fill="#8b949e">extracted_file.bin (decimal byte slice)</text>
+      <text x="14" y="193" fill="#6e7681">├──</text> <text x="42" y="193" fill="#82b8f0">Stegseek/</text> <text x="142" y="193" fill="#8b949e">stegseek_&lt;target&gt;.log</text>
+      <text x="14" y="209" fill="#6e7681">└──</text> <text x="42" y="209" fill="#82b8f0">Volatility/</text> <text x="142" y="209" fill="#8b949e">memory_profile · process_list · net · reg</text>
+    </g>
+  </g>
+
+  <g transform="translate(458, 20)">
+    <rect x="0" y="0" width="422" height="228" rx="6" fill="#080b11" stroke="#222c3c" stroke-width="1" />
+    <rect x="1" y="1" width="420" height="28" rx="5" fill="#0f1c15" />
+    <line x1="0" y1="29" x2="422" y2="29" stroke="#222c3c" stroke-width="1" />
+    <line x1="0" y1="6" x2="0" y2="24" stroke="#56d364" stroke-width="3" />
+    <text x="14" y="19" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="700" fill="#7ee787" letter-spacing="1.0">OPTION 11 FULL AUTOMATION &amp; ZIP BUNDLE</text>
+    <text x="408" y="19" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="8.5" fill="#7ee787">[0x0B | 11]</text>
+
+    <g font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#c9d1d9">
+      <text x="14" y="48" fill="#f0f6fc" font-weight="700">Engineer/</text>
+      <text x="14" y="65" fill="#6e7681">├──</text> <text x="42" y="65" fill="#d4a359" font-weight="700">&lt;target_file&gt;/Automation/</text>
+      <text x="14" y="81" fill="#6e7681">│   ├──</text> <text x="66" y="81" fill="#c9d1d9">binwalk_&lt;target&gt;.log &amp; exiftool_&lt;target&gt;.log</text>
+      <text x="14" y="97" fill="#6e7681">│   ├──</text> <text x="66" y="97" fill="#c9d1d9">bulk_extractor/ (8-category artifact dir)</text>
+      <text x="14" y="113" fill="#6e7681">│   ├──</text> <text x="66" y="113" fill="#c9d1d9">Foremost/ &amp; Scalpel/ (carved files)</text>
+      <text x="14" y="129" fill="#6e7681">│   ├──</text> <text x="66" y="129" fill="#c9d1d9">strings_&lt;target&gt;.log (60-keyword regex)</text>
+      <text x="14" y="145" fill="#6e7681">│   ├──</text> <text x="66" y="145" fill="#c9d1d9">stegseek_&lt;target&gt;.log</text>
+      <text x="14" y="161" fill="#6e7681">│   └──</text> <text x="66" y="161" fill="#82b8f0">volatility/</text>
+      <text x="14" y="177" fill="#6e7681">│       ├──</text> <text x="88" y="177" fill="#8b949e">Win: info, pslist, netscan, printkey, malfind</text>
+      <text x="14" y="193" fill="#6e7681">│       └──</text> <text x="88" y="193" fill="#8b949e">Lin: pslist, bash, sockstat, modules, tty</text>
+      <text x="14" y="211" fill="#6e7681">└──</text> <text x="42" y="211" fill="#7ee787" font-weight="700">&lt;target_no_ext&gt;_Automation.zip</text>
+    </g>
+  </g>
+</svg>

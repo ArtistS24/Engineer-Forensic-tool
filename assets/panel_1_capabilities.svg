@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 330" width="100%" height="100%">
+  <rect width="900" height="330" rx="10" fill="#040609" />
+  <rect x="8" y="8" width="884" height="314" rx="8" fill="none" stroke="#c9934b" stroke-width="0.7" stroke-opacity="0.32" />
+
+  <g transform="translate(22, 22)">
+    <rect x="0" y="0" width="420" height="88" rx="6" fill="#080b11" stroke="#222c3c" stroke-width="1" />
+    <line x1="0" y1="10" x2="0" y2="78" stroke="#d4a359" stroke-width="3" />
+    <text x="16" y="22" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Self-Healing Dependency Bootstrap</text>
+    <text x="406" y="21" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="8.5" fill="#d4a359">root_check · tool_check</text>
+    <text x="16" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">Verifies root privileges and checks all 11 required forensic binaries.</text>
+    <text x="16" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">Auto-installs missing apt packages (mapping bulk-extractor &amp; binutils)</text>
+    <text x="16" y="74" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#7ee787">and provisions Volatility 3 via pip3 install volatility3.</text>
+  </g>
+
+  <g transform="translate(458, 22)">
+    <rect x="0" y="0" width="420" height="88" rx="6" fill="#080b11" stroke="#222c3c" stroke-width="1" />
+    <line x1="0" y1="10" x2="0" y2="78" stroke="#4d88c4" stroke-width="3" />
+    <text x="16" y="22" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Interactive Navigator &amp; Exiftool HUD</text>
+    <text x="406" y="21" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="8.5" fill="#82b8f0">file_check · analysis_header</text>
+    <text x="16" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">Built-in directory browser supporting live ls toggling and cd traversal</text>
+    <text x="16" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">before locking onto a target image. Pins a persistent Exiftool HUD bar</text>
+    <text x="16" y="74" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">displaying File Name, Size, Modification Date, and File Type.</text>
+  </g>
+
+  <g transform="translate(22, 121)">
+    <rect x="0" y="0" width="420" height="88" rx="6" fill="#080b11" stroke="#222c3c" stroke-width="1" />
+    <line x1="0" y1="10" x2="0" y2="78" stroke="#c9654b" stroke-width="3" />
+    <text x="16" y="22" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Multi-Engine Carving &amp; DD Slicing</text>
+    <text x="406" y="21" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="8.5" fill="#f0a896">binwalk · foremost · scalpel · dd</text>
+    <text x="16" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">Combines Binwalk signature/extraction/entropy scans (-B, -e, -E) with</text>
+    <text x="16" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">Foremost and Scalpel header carving, plus an interactive DD byte slicer</text>
+    <text x="16" y="74" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#f0a896">that carves exact decimal offset ranges (bs=1 skip=start count=len).</text>
+  </g>
+
+  <g transform="translate(458, 121)">
+    <rect x="0" y="0" width="420" height="88" rx="6" fill="#080b11" stroke="#222c3c" stroke-width="1" />
+    <line x1="0" y1="10" x2="0" y2="78" stroke="#d2a8ff" stroke-width="3" />
+    <text x="16" y="22" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Bulk Extractor 8-Artifact Telemetry HUD</text>
+    <text x="406" y="21" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="8.5" fill="#d2a8ff">bulk_extractor_menu</text>
+    <text x="16" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">Runs bulk_extractor and parses the output directory to render a live</text>
+    <text x="16" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">hit-count summary across 8 high-value artifact classes:</text>
+    <text x="16" y="74" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#d2a8ff">EMAILS · CREDIT CARDS · URLS · PCAP · EXIF · BASE64 · AES · JSON</text>
+  </g>
+
+  <g transform="translate(22, 220)">
+    <rect x="0" y="0" width="420" height="88" rx="6" fill="#080b11" stroke="#222c3c" stroke-width="1" />
+    <line x1="0" y1="10" x2="0" y2="78" stroke="#79c0ff" stroke-width="3" />
+    <text x="16" y="22" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Volatility 3 Dual-OS Memory Triage</text>
+    <text x="406" y="21" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="8.5" fill="#79c0ff">vol_function [0x0A]</text>
+    <text x="16" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">Automatically fingerprints memory dumps via windows.info and linux.pslist</text>
+    <text x="16" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">before routing to OS-specific plugins for profile detection, process lists,</text>
+    <text x="16" y="74" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#79c0ff">network sockets (netscan/sockstat), registry printkey, and malfind.</text>
+  </g>
+
+  <g transform="translate(458, 220)">
+    <rect x="0" y="0" width="420" height="88" rx="6" fill="#080b11" stroke="#222c3c" stroke-width="1" />
+    <line x1="0" y1="10" x2="0" y2="78" stroke="#56d364" stroke-width="3" />
+    <text x="16" y="22" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="700" fill="#f4efe6" letter-spacing="0.8">One-Click Automation &amp; ZIP Archiver</text>
+    <text x="406" y="21" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="8.5" fill="#7ee787">automation_function [0x0B]</text>
+    <text x="16" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">Chains Binwalk, Exiftool, Bulk Extractor, Foremost, Scalpel, 60-keyword</text>
+    <text x="16" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" fill="#9da9bb">Strings grep, Stegseek, and Volatility 3 in sequence, then packages</text>
+    <text x="16" y="74" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#7ee787">all logs and carved files into Engineer/&lt;file&gt;_Automation.zip.</text>
+  </g>
+</svg>

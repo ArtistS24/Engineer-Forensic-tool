@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 474" width="100%" height="100%">
+  <rect width="900" height="474" rx="10" fill="#040609" />
+  <rect x="8" y="8" width="884" height="458" rx="8" fill="none" stroke="#c9934b" stroke-width="0.7" stroke-opacity="0.32" />
+
+  <g transform="translate(16, 18)">
+    <rect x="0" y="0" width="868" height="32" rx="5" fill="#10151f" stroke="#c9934b" stroke-width="0.6" stroke-opacity="0.40" />
+    <text x="14" y="20.5" font-family="Georgia, 'Times New Roman', serif" font-size="10" font-weight="700" fill="#d4a359" letter-spacing="1.2">DISPATCH ID</text>
+    <text x="115" y="20.5" font-family="Georgia, 'Times New Roman', serif" font-size="10" font-weight="700" fill="#d4a359" letter-spacing="1.2">MODULE</text>
+    <text x="255" y="20.5" font-family="Georgia, 'Times New Roman', serif" font-size="10" font-weight="700" fill="#d4a359" letter-spacing="1.2">UNDERLYING ENGINE &amp; FLAGS</text>
+    <text x="565" y="20.5" font-family="Georgia, 'Times New Roman', serif" font-size="10" font-weight="700" fill="#d4a359" letter-spacing="1.2">OUTPUT WORKSPACE &amp; ARTIFACTS</text>
+  </g>
+
+  <g transform="translate(16, 56)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#080b11" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x01] | 1</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">Binwalk</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">binwalk -B / -e --run-as=root / -E &lt;file&gt;</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;/Binwalk/ (Scan, Extract, Entropy)</text>
+  </g>
+  <g transform="translate(16, 87)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#06080d" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x02] | 2</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">Exiftool</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">exiftool &lt;file&gt; (optional -s flag)</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;/Exiftool/exiftool_&lt;file&gt;.log</text>
+  </g>
+  <g transform="translate(16, 118)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#080b11" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x03] | 3</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">Bulk Extractor</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">bulk_extractor -o &lt;dir&gt; &lt;file&gt;</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;/Bulk_Extractor/ + 8-artifact HUD</text>
+  </g>
+  <g transform="translate(16, 149)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#06080d" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x04] | 4</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">Hexdump</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">hexdump -C &lt;file&gt; (optional -s flag)</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;/Hexdump/hexdump_&lt;file&gt;.txt</text>
+  </g>
+  <g transform="translate(16, 180)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#080b11" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x05] | 5</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">Foremost</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">foremost -i &lt;file&gt; -o &lt;dir&gt;</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;/Foremost/ (carved file types)</text>
+  </g>
+  <g transform="translate(16, 211)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#06080d" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x06] | 6</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">Scalpel</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">scalpel &lt;file&gt; -o &lt;dir&gt;</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;/Scalpel/ (rule-based carving)</text>
+  </g>
+  <g transform="translate(16, 242)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#080b11" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x07] | 7</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">Strings</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">strings &lt;file&gt; | grep -a &lt;filter&gt; (-s flag)</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;/Strings/strings_&lt;file&gt;_&lt;opt&gt;.log</text>
+  </g>
+  <g transform="translate(16, 273)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#06080d" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x08] | 8</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">DD Offset Carve</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">dd if=&lt;file&gt; of=extracted_file.bin bs=1 skip=...</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;/DD/extracted_file.bin</text>
+  </g>
+  <g transform="translate(16, 304)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#080b11" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x09] | 9</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">Stegseek</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">stegseek &lt;file&gt;</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;/Stegseek/stegseek_&lt;file&gt;.log</text>
+  </g>
+  <g transform="translate(16, 335)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#06080d" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x0A] | 10</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#82b8f0">Volatility 3</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">vol -f &lt;file&gt; windows.* / linux.* (-s flag)</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;/Volatility/ (Profile, PS, Net, Reg)</text>
+  </g>
+  <g transform="translate(16, 366)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#080b11" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#7ee787">[0x0B] | 11</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#7ee787">Automation</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">Runs Binwalk, Exif, Bulk, Carvers, Strings, Steg, Vol3 + zip</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Engineer/&lt;file&gt;_Automation.zip (Full bundle)</text>
+  </g>
+  <g transform="translate(16, 397)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#06080d" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#d4a359">[0x0C] | 12</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">Switch the file</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">file_check() interactive directory/file browser</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Re-binds active target &amp; refreshes Exiftool HUD</text>
+  </g>
+  <g transform="translate(16, 428)">
+    <rect x="0" y="0" width="868" height="30" rx="4" fill="#080b11" />
+    <text x="14" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#f0a896">[0x0D] | 13</text>
+    <text x="115" y="19.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="600" fill="#f0f4f8">Exit</text>
+    <text x="255" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#82b8f0">clear &amp;&amp; exit 0</text>
+    <text x="565" y="19.5" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="9.2" fill="#9da9bb">Terminates active Engineer.sh session</text>
+  </g>
+</svg>
