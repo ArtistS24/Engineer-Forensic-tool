@@ -43,38 +43,50 @@ function root_check() {
 # Tool check
 function tool_check() {
     echo -e "${yellow}Loading...${nc}"
-    apt-get update &>/dev/null
-    tools="bulk_extractor exiftool stegseek foremost strings binwalk scalpel figlet hexdump dd"
-    
+    tools="bulk_extractor exiftool stegseek foremost strings binwalk scalpel figlet hexdump dd zip"
+    local missing_tools=()
+
     for tool in $tools; do
         if ! command -v "$tool" &>/dev/null; then
-            echo -e "${red}[-] $tool is not installed. Installing now...${nc}"
-            if ! apt-get install -y "$tool" &>/dev/null; then
-                echo -e "${bold_red}[-] Error: Failed to install $tool${nc}"
-                echo -e "${bold_red}[*] Please install it manually with: sudo apt-get install $tool${nc}"
-                exit 1
-            fi
+            missing_tools+=("$tool")
         fi
     done
-    
+
+    if [ ${#missing_tools[@]} -gt 0 ]; then
+        apt-get update &>/dev/null
+        for tool in "${missing_tools[@]}"; do
+            local pkg="$tool"
+            [ "$tool" = "bulk_extractor" ] && pkg="bulk-extractor"
+            [ "$tool" = "strings" ] && pkg="binutils"
+            [ "$tool" = "exiftool" ] && pkg="libimage-exiftool-perl"
+            [ "$tool" = "hexdump" ] && pkg="bsdextrautils"
+            [ "$tool" = "dd" ] && pkg="coreutils"
+            echo -e "${red}[-] $tool is not installed. Installing now...${nc}"
+            if ! apt-get install -y "$pkg" &>/dev/null; then
+                echo -e "${bold_red}[-] Error: Failed to install $tool${nc}"
+                echo -e "${bold_red}[*] Please install it manually with: sudo apt-get install $pkg${nc}"
+                exit 1
+            fi
+        done
+    fi
 }
 
 # Volatility 3 Installation Check
 function vol_check() {
-    if ! command -v vol 2>/dev/null; then
+    if ! command -v vol &>/dev/null; then
         echo -e "${red}[-] Volatility 3 is not installed. Installing now...${nc}"
         
         # Update package lists
-        sudo apt update -y &>/dev/null
+        apt-get update -y &>/dev/null
         
         # Install Python and pip
-        sudo apt install python3 python3-pip -y &>/dev/null
+        apt-get install python3 python3-pip -y &>/dev/null
         
         # Install Volatility 3
-        sudo pip3 install volatility3 --break-system-packages &>/dev/null
+        pip3 install volatility3 --break-system-packages &>/dev/null || pip3 install volatility3 &>/dev/null
 
         # Check if Volatility 3 installed successfully
-        if command -v vol 2>/dev/null; then
+        if command -v vol &>/dev/null; then
             return 0
         else
             echo -e "${bold_red}[-] Installation failed.${nc}"
@@ -131,9 +143,15 @@ function file_check() {
         read -p "$(echo -e "${bold_cyan}[INPUT]${nc} ${bold_cyan}Specify the file to examine: ${nc}")" choice
 
         if [ "$choice" = "ls" ]; then
-            ls_visible=$(! $ls_visible && echo true || echo false)
+            if [ "$ls_visible" = true ]; then
+                ls_visible=false
+            else
+                ls_visible=true
+            fi
         elif [ -f "$choice" ]; then
             filename="$choice"
+            base_file_name=$(basename "$filename")
+            base_file_name_no_ext=$(basename "$filename" | sed 's/\.[^.]*$//')
             echo -e "${bold_green}[SUCCESS] File found: $filename${nc}"
             echo -e "${bold_green}[INFO] Starting analysis...${nc}"
             sleep 1
@@ -142,6 +160,13 @@ function file_check() {
                 echo -e "${bold_green}[SUCCESS] Changed to: $choice${nc}"
             else
                 echo -e "${bold_red}[ERROR] Failed to enter: $choice${nc}"
+            fi
+        elif [[ "$choice" =~ ^cd[[:space:]]+(.*)$ ]]; then
+            local target_dir="${BASH_REMATCH[1]}"
+            if cd "$target_dir"; then
+                echo -e "${bold_green}[SUCCESS] Changed to: $(pwd)${nc}"
+            else
+                echo -e "${bold_red}[ERROR] Failed to enter: $target_dir${nc}"
             fi
         elif [ "$choice" = "exit" ]; then
             clear
@@ -197,7 +222,7 @@ function main_menu() {
             10) vol_function ;;
             11) automation_function ;; 
             12) file_check ;; 
-            13) clear; echo -e "${bold_red}Exiting...${nc}"; exit ;;
+            13) clear; echo -e "${bold_red}Exiting...${nc}"; exit 0 ;;
             *) echo -e "${bold_red}[ERROR] Invalid option! Please choose a number from 1 to 13.${nc}"; sleep 1 ;;
         esac
     done
@@ -226,7 +251,7 @@ function binwalk_menu() {
             save=true
         fi
 
-        output_dir="Engineer/${filename}/Binwalk"
+        output_dir="Engineer/${base_file_name}/Binwalk"
         if $save; then
             mkdir -p "$output_dir"
         fi
@@ -236,30 +261,28 @@ function binwalk_menu() {
             1)
                 if $save; then
                     echo -e "${bold_green}[INFO] Running Quick Scan and saving results...${nc}"
-                    binwalk -B "$filename" | tee "$output_dir/quick_scan_${filename}.log"
-                    echo -e "${bold_green}[SUCCESS] Results saved to: ${bold_yellow}$output_dir/quick_scan_${filename}.log${nc}"
+                    binwalk -B "$filename" | tee "$output_dir/quick_scan_${base_file_name}.log"
+                    echo -e "${bold_green}[SUCCESS] Results saved to: ${bold_yellow}$output_dir/quick_scan_${base_file_name}.log${nc}"
                 else
                     echo -e "${bold_green}[INFO] Running Quick Scan...${nc}"
                     binwalk -B "$filename"
                 fi
                 ;;
             2)
-                
-                    echo -e "${bold_green}[INFO] Extracting files and saving results...${nc}"
-                    original_dir=$(pwd)
-                    full_filename=$(realpath "$filename")
-                    cd "$output_dir" || exit
-                    binwalk -e --run-as=root "$full_filename" | tee "binwalk_extracted_${filename}.log"
-                    cd "$original_dir" || exit
-                    echo -e "${bold_green}[SUCCESS] Extracted files saved to: ${bold_yellow}$output_dir${nc}"
-            
-                
+                mkdir -p "$output_dir"
+                echo -e "${bold_green}[INFO] Extracting files and saving results...${nc}"
+                original_dir=$(pwd)
+                full_filename=$(realpath "$filename")
+                cd "$output_dir" || { echo -e "${bold_red}[ERROR] Failed to enter output directory.${nc}"; break; }
+                binwalk -e --run-as=root "$full_filename" | tee "binwalk_extracted_${base_file_name}.log"
+                cd "$original_dir" || true
+                echo -e "${bold_green}[SUCCESS] Extracted files saved to: ${bold_yellow}$output_dir${nc}"
                 ;;
             3)
                 if $save; then
                     echo -e "${bold_green}[INFO] Generating Entropy Graph and saving results...${nc}"
-                    binwalk -E "$filename" | tee "$output_dir/entropy_graph_${filename}.log"
-                    echo -e "${bold_green}[SUCCESS] Entropy graph saved to: ${bold_yellow}$output_dir/entropy_graph_${filename}.log${nc}"
+                    binwalk -E "$filename" | tee "$output_dir/entropy_graph_${base_file_name}.log"
+                    echo -e "${bold_green}[SUCCESS] Entropy graph saved to: ${bold_yellow}$output_dir/entropy_graph_${base_file_name}.log${nc}"
                 else
                     echo -e "${bold_green}[INFO] Generating Entropy Graph...${nc}"
                     binwalk -E "$filename"
@@ -298,10 +321,10 @@ function exiftool_function() {
     read -p "$(echo -e "${bold_yellow}To save $filename's metadata type \"-s\" or press Enter to continue...${nc}")" exiftool_choice
     
     if [ "$exiftool_choice" = "-s" ]; then
-        output_dir="Engineer/${filename}/Exiftool"
+        output_dir="Engineer/${base_file_name}/Exiftool"
         mkdir -p "$output_dir"
-        exiftool "$filename" > "$output_dir/exiftool_${filename}.log"
-        echo -e "${green}Results saved to $output_dir/exiftool_${filename}.log${nc}"
+        exiftool "$filename" > "$output_dir/exiftool_${base_file_name}.log"
+        echo -e "${green}Results saved to $output_dir/exiftool_${base_file_name}.log${nc}"
         read -p "$(echo -e "${bold_yellow}Press Enter to continue...${nc}")"
     fi
 }
@@ -323,11 +346,11 @@ function bulk_extractor_menu() {
 
         case $bulk_choice in
             1)
-                output_dir="Engineer/${filename}/Bulk_Extractor"
+                output_dir="Engineer/${base_file_name}/Bulk_Extractor"
                 mkdir -p "$output_dir"
                 start_time=$(date +%s)
                 echo -e "${bold_green}[INFO] Running Extract Everything Automation...${nc}"
-                bulk_extractor -o "$output_dir" "$filename" | tee "$output_dir/bulk_extractor_${filename}.log"
+                bulk_extractor -o "$output_dir" "$filename" | tee "$output_dir/bulk_extractor_${base_file_name}.log"
 
                 # Display results
                 echo -e "${bold_cyan}┌───────────────────────────────(${bold_red}RESULTS${bold_cyan})────────────────────────────────┐"
@@ -467,11 +490,11 @@ function hexdump_function() {
         case $hexdump_choice in
             1)
                 if $save; then
-                    output_dir="Engineer/${filename}/Hexdump"
+                    output_dir="Engineer/${base_file_name}/Hexdump"
                     mkdir -p "$output_dir"
                     echo -e "${bold_green}[INFO] Saving Hexdump to file...${nc}"
-                    hexdump -C "$filename" | tee "$output_dir/hexdump_${filename}.txt"
-                    echo -e "${bold_green}[SUCCESS] Hexdump saved to: ${bold_yellow}$output_dir/hexdump_${filename}.txt${nc}"
+                    hexdump -C "$filename" | tee "$output_dir/hexdump_${base_file_name}.txt"
+                    echo -e "${bold_green}[SUCCESS] Hexdump saved to: ${bold_yellow}$output_dir/hexdump_${base_file_name}.txt${nc}"
                 else
                     echo -e "${bold_green}[INFO] Displaying Hexdump...${nc}"
                     hexdump -C "$filename"
@@ -511,8 +534,11 @@ function foremost_function() {
 
         case $foremost_choice in
             1)
-                output_dir="Engineer/${filename}/Foremost"
+                output_dir="Engineer/${base_file_name}/Foremost"
                 mkdir -p "$output_dir"
+                if [ "$(ls -A "$output_dir" 2>/dev/null)" ]; then
+                    rm -rf "${output_dir:?}"/*
+                fi
                 start_time=$(date +%s)
                 echo -e "${bold_green}[INFO] Running Foremost...${nc}"
                 foremost -i "$filename" -o "$output_dir" &>/dev/null
@@ -555,14 +581,18 @@ function scalpel_function() {
 
         case $scalpel_choice in
             1)
-                output_dir="Engineer/${filename}/Scalpel"
+                output_dir="Engineer/${base_file_name}/Scalpel"
                 mkdir -p "$output_dir"
+                if [ "$(ls -A "$output_dir" 2>/dev/null)" ]; then
+                    rm -rf "${output_dir:?}"/*
+                fi
                 start_time=$(date +%s)
                 echo -e "${bold_green}[INFO] Running Scalpel...${nc}"
+                grep -Eq '^[[:space:]]*[^#[:space:]]' /etc/scalpel/scalpel.conf 2>/dev/null || sed -i -E 's/^#[[:space:]]*(gif|jpg|png|pdf|zip)[[:space:]]/\1\t/I' /etc/scalpel/scalpel.conf 2>/dev/null
                 if scalpel "$filename" -o "$output_dir" &>/dev/null; then
                     echo -e "${bold_green}[SUCCESS] Scalpel completed. Results saved in: ${bold_yellow}$output_dir${nc}"
                 else
-                    echo -e "${bold_red}[ERROR] Scalpel failed.${nc}"
+                    echo -e "${bold_red}[ERROR] Scalpel failed (check /etc/scalpel/scalpel.conf rules).${nc}"
                 fi
                 ;;
             2)
@@ -611,8 +641,8 @@ function strings_function() {
                     fi
 
                     save=false
-                    if [[ "$strings_options" == *"-s"* ]]; then
-                        strings_options="${strings_options/-s/}"
+                    if [[ "$strings_options" =~ (^|[[:space:]])-s($|[[:space:]]) ]]; then
+                        strings_options=$(echo "$strings_options" | sed -E 's/(^|[[:space:]])-s($|[[:space:]])/ /g')
                         save=true
                     fi
 
@@ -620,7 +650,7 @@ function strings_function() {
 
                     start_time=$(date +%s)
                     if $save; then
-                        output_dir="Engineer/${filename}/Strings"
+                        output_dir="Engineer/${base_file_name}/Strings"
                         mkdir -p "$output_dir"
                         echo -e "${bold_green}[INFO] Running Strings with options and saving output...${nc}"
 
@@ -632,12 +662,12 @@ function strings_function() {
                         fi
 
                         if [ -z "$strings_options" ]; then
-                            strings "$filename" | tee "$output_dir/strings_${filename}_${sanitized_strings_options}.log"
+                            strings "$filename" | tee "$output_dir/strings_${base_file_name}_${sanitized_strings_options}.log"
                         else
-                            strings "$filename" | grep -a "$strings_options" | tee "$output_dir/strings_${filename}_${sanitized_strings_options}.log"
+                            strings "$filename" | grep -a "$strings_options" | tee "$output_dir/strings_${base_file_name}_${sanitized_strings_options}.log"
                         fi
 
-                        echo -e "${bold_green}[INFO] Strings output saved to: ${bold_yellow}$output_dir/strings_${filename}_${sanitized_strings_options}.log${nc}"
+                        echo -e "${bold_green}[INFO] Strings output saved to: ${bold_yellow}$output_dir/strings_${base_file_name}_${sanitized_strings_options}.log${nc}"
                     else
                         echo -e "${bold_green}[INFO] Running Strings...${nc}"
                         if [ -z "$strings_options" ]; then
@@ -683,7 +713,12 @@ function dd_function() {
             echo -e "${bold_yellow}[INFO] You can use the offsets to extract a specific file.${nc}"
             read -p "$(echo -e "${bold_yellow}[INPUT] Enter the start offset (in bytes): ${nc}")" start_offset
             read -p "$(echo -e "${bold_yellow}[INPUT] Enter the end offset (in bytes): ${nc}")" end_offset
-            output_file="Engineer/${filename}/DD/extracted_file.bin"
+            if ! [[ "$start_offset" =~ ^[0-9]+$ ]] || ! [[ "$end_offset" =~ ^[0-9]+$ ]] || [ "$end_offset" -lt "$start_offset" ]; then
+                echo -e "${bold_red}[ERROR] Invalid offsets! Must be non-negative integers with end >= start.${nc}"
+                read -p "$(echo -e "${bold_yellow}[INFO] Press Enter to continue...${nc}")"
+                return
+            fi
+            output_file="Engineer/${base_file_name}/DD/extracted_file.bin"
             mkdir -p "$(dirname "$output_file")"
             start_time=$(date +%s)
             echo -e "${bold_green}[INFO] Extracting file from offset $start_offset to $end_offset...${nc}"
@@ -721,13 +756,13 @@ function stegseek_function() {
 
     case $stegseek_choice in
         1)
-            output_dir="Engineer/${filename}/Stegseek"
+            output_dir="Engineer/${base_file_name}/Stegseek"
             mkdir -p "$output_dir"
             start_time=$(date +%s) # Start timer
             echo -e "${bold_green}[INFO] Running Stegseek...${nc}"
-            stegseek "$filename" > "$output_dir/stegseek_${filename}.log"
-            if [ $? -eq 0 ]; then
-                echo -e "${bold_green}[SUCCESS] Stegseek completed. Results saved in: ${bold_yellow}$output_dir/stegseek_${filename}.log${nc}"
+            [ ! -f /usr/share/wordlists/rockyou.txt ] && [ -f /usr/share/wordlists/rockyou.txt.gz ] && gunzip -k /usr/share/wordlists/rockyou.txt.gz 2>/dev/null
+            if stegseek "$filename" > "$output_dir/stegseek_${base_file_name}.log" 2>&1 || stegseek --seed "$filename" > "$output_dir/stegseek_${base_file_name}.log" 2>&1; then
+                echo -e "${bold_green}[SUCCESS] Stegseek completed. Results saved in: ${bold_yellow}$output_dir/stegseek_${base_file_name}.log${nc}"
             else
                 echo -e "${bold_red}[ERROR] Stegseek failed to process the file.${nc}"
             fi
@@ -794,17 +829,14 @@ function vol_function() {
                 fi
 
                 # Set up the output directory now that OS is detected
-                output_dir="Engineer/${filename}/Volatility"
+                output_dir="Engineer/${base_file_name}/Volatility"
                 mkdir -p "$output_dir"
                 echo -e "${bold_green}[INFO] Analysis output will be saved in: ${bold_yellow}$output_dir${nc}"
 
                 # --- Analysis Menu (After OS detection) ---
                 while true; do
-                clear
-                        echo -e "${bold_cyan}$(figlet -f small "Volatility 3")${nc}"
-
                     banner
-                            echo -e "${bold_cyan}$(figlet -f small "Volatility 3")${nc}"
+                    echo -e "${bold_cyan}$(figlet -f small "Volatility 3")${nc}"
 
                     echo -e "${bold_cyan}┌─────────────────────────────────────────────────────────────────────────────────────┐"
                     echo -e "│ ${cyan}[0x01]${yellow} | 1${nc} ${bold_white}Find Memory Profile     ${nc}│ Detect memory profile                          │"
@@ -820,7 +852,7 @@ function vol_function() {
                     local save=false 
                     if [ "$flag" = "-s" ]; then
                         save=true
-                        output_dir="Engineer/${filename}/Volatility"
+                        output_dir="Engineer/${base_file_name}/Volatility"
                         mkdir -p "$output_dir"
                         echo -e "${bold_green}[INFO] Analysis output will be saved in: ${bold_yellow}$output_dir${nc}"
                     fi
@@ -841,8 +873,8 @@ function vol_function() {
 
                             if [ -n "$memory_profile" ]; then
                                 if $save; then
-                                    echo "$memory_profile" > "$output_dir/memory_profile_${filename}.txt"
-                                    echo -e "${bold_green}[SUCCESS] Memory profile saved to: ${bold_yellow}$output_dir/memory_profile_${filename}.txt${nc}"
+                                    echo "$memory_profile" > "$output_dir/memory_profile_${base_file_name}.txt"
+                                    echo -e "${bold_green}[SUCCESS] Memory profile saved to: ${bold_yellow}$output_dir/memory_profile_${base_file_name}.txt${nc}"
                                 else
                                     echo -e "${bold_green}[SUCCESS] Memory profile detected: ${bold_yellow}$memory_profile${nc}"
                                 fi
@@ -863,8 +895,8 @@ function vol_function() {
                                 echo -e "${bold_red}[-] Unsupported OS type detected for this action!${nc}"
                             else
                                 if $save; then
-                                    vol -f "$filename" "$plugin" 2>/dev/null | tee "$output_dir/process_list_${filename}.txt"
-                                    echo -e "${bold_green}[SUCCESS] Process list saved to: ${bold_yellow}$output_dir/process_list_${filename}.txt${nc}"
+                                    vol -f "$filename" "$plugin" 2>/dev/null | tee "$output_dir/process_list_${base_file_name}.txt"
+                                    echo -e "${bold_green}[SUCCESS] Process list saved to: ${bold_yellow}$output_dir/process_list_${base_file_name}.txt${nc}"
                                 else
                                     vol -f "$filename" "$plugin" 2>/dev/null
                                 fi
@@ -883,8 +915,8 @@ function vol_function() {
                                 echo -e "${bold_red}[-] Unsupported OS type detected for this action!${nc}"
                             else
                                 if $save; then
-                                    vol -f "$filename" "$plugin" 2>/dev/null | sort | tee "$output_dir/network_connections_${filename}.txt"
-                                    echo -e "${bold_green}[SUCCESS] Network connections saved to: ${bold_yellow}$output_dir/network_connections_${filename}.txt${nc}"
+                                    vol -f "$filename" "$plugin" 2>/dev/null | sort | tee "$output_dir/network_connections_${base_file_name}.txt"
+                                    echo -e "${bold_green}[SUCCESS] Network connections saved to: ${bold_yellow}$output_dir/network_connections_${base_file_name}.txt${nc}"
                                 else
                                     vol -f "$filename" "$plugin" 2>/dev/null | sort
                                 fi
@@ -902,8 +934,8 @@ function vol_function() {
 
                             if [ -n "$plugin" ]; then
                                 if $save; then
-                                    vol -f "$filename" "$plugin" 2>/dev/null | tee "$output_dir/registry_info_${filename}.txt"
-                                    echo -e "${bold_green}[SUCCESS] Registry information saved to: ${bold_yellow}$output_dir/registry_info_${filename}.txt${nc}"
+                                    vol -f "$filename" "$plugin" 2>/dev/null | tee "$output_dir/registry_info_${base_file_name}.txt"
+                                    echo -e "${bold_green}[SUCCESS] Registry information saved to: ${bold_yellow}$output_dir/registry_info_${base_file_name}.txt${nc}"
                                 else
                                     vol -f "$filename" "$plugin" 2>/dev/null
                                 fi
@@ -956,7 +988,7 @@ function automation_function() {
         local base_file_name=$(basename "$filename")
         local base_file_name_no_ext=$(basename "$filename" | sed 's/\.[^.]*$//')
 
-        local output_dir="Engineer/${filename}/Automation"
+        local output_dir="Engineer/${base_file_name}/Automation"
         mkdir -p "$output_dir"
         local total_start_time=$(date +%s)
         echo -e "${bold_green}[INFO] Running all tools in sequence...${nc}"
@@ -1090,6 +1122,10 @@ function automation_function() {
         # Foremost
         echo -e "${bold_cyan}Running Foremost...${nc}"
         local foremost_dir="$output_dir/Foremost"
+        mkdir -p "$foremost_dir"
+        if [ "$(ls -A "$foremost_dir" 2>/dev/null)" ]; then
+            rm -rf "${foremost_dir:?}"/*
+        fi
         if foremost -i "$filename" -o "$foremost_dir" &>/dev/null; then
             echo -e "${bold_green}[INFO] Foremost completed. Results are in: ${bold_yellow}$foremost_dir${nc}"
         else
@@ -1100,7 +1136,12 @@ function automation_function() {
         # Scalpel
         echo -e "${bold_cyan}Running Scalpel...${nc}"
         local scalpel_dir="$output_dir/Scalpel"
-        if scalpel -o "$filename" -O "$scalpel_dir" 2>/dev/null; then
+        mkdir -p "$scalpel_dir"
+        if [ "$(ls -A "$scalpel_dir" 2>/dev/null)" ]; then
+            rm -rf "${scalpel_dir:?}"/*
+        fi
+        grep -Eq '^[[:space:]]*[^#[:space:]]' /etc/scalpel/scalpel.conf 2>/dev/null || sed -i -E 's/^#[[:space:]]*(gif|jpg|png|pdf|zip)[[:space:]]/\1\t/I' /etc/scalpel/scalpel.conf 2>/dev/null
+        if scalpel "$filename" -o "$scalpel_dir" 2>/dev/null; then
             echo -e "${bold_green}[INFO] Scalpel completed. Results saved in: ${bold_yellow}$scalpel_dir${nc}"
         else
             echo -e "${bold_red}[ERROR] Scalpel failed.${nc}"
@@ -1110,17 +1151,21 @@ function automation_function() {
         # Strings
         echo -e "${bold_cyan}Running Strings for common keywords...${nc}"
         local strings_log="$output_dir/strings_${base_file_name}.log"
-        if strings "$filename" | grep -E 'password|passwd|pwd|secret|key|token|credential|user|username|login|auth|authentication|dll|api|bearer|ssh|ssl|certificate|private|public|encrypt|decrypt|hash|salt|jwt|oauth|session|cookie|admin|root|sql|query|config|setting|env|environment|database|db|url|endpoint|proxy|vpn|ftp|smtp|ldap|krb|kerberos|access|privilege|permission|role|account|signin|signup|register|reset|forgot|change|update|modify|delete|remove|create|new|old|backup|restore|dump|load|import|export|execute|command|cmd|shell|script|batch|ps1|vbs|exe|dll|so|lib|library|binary|win32|syscall|hook|inject|migrate|bypass|disable|enable|debug|verbose|log|trace|audit|monitor|check|verify|validate|test|prod|dev|staging|qa|uat|sandbox' > "$strings_log"; then
-            echo -e "${bold_green}[INFO] Strings output saved to: ${bold_yellow}$strings_log${nc}"
+        strings "$filename" | grep -Ei 'password|passwd|pwd|secret|key|token|credential|user|username|login|auth|dll|api|bearer|ssh|ssl|certificate|private|public|encrypt|decrypt|hash|salt|jwt|oauth|session|cookie|admin|root|sql|query|config|setting|env|database|db|url|endpoint|proxy|vpn|ftp|smtp|ldap|kerberos|access|privilege|permission|account|execute|command|cmd|shell|script|exe|dll|binary|syscall|hook|inject|bypass|debug|log|audit' > "$strings_log" || true
+        local strings_count
+        strings_count=$(wc -l < "$strings_log")
+        if [ "$strings_count" -gt 0 ]; then
+            echo -e "${bold_green}[INFO] Found $strings_count keyword matches. Saved to: ${bold_yellow}$strings_log${nc}"
         else
-            echo -e "${bold_red}[ERROR] Strings failed.${nc}"
+            echo -e "${bold_yellow}[INFO] No keyword matches found. Empty log saved to: ${bold_yellow}$strings_log${nc}"
         fi
         echo -e "${bold_yellow}---------------------------------------------------------------------------------${nc}"
 
         # Stegseek
         echo -e "${bold_cyan}Running Stegseek...${nc}"
         local stegseek_log="$output_dir/stegseek_${base_file_name}.log"
-        if stegseek "$filename" 2>&1 | tee "$stegseek_log"; then
+        [ ! -f /usr/share/wordlists/rockyou.txt ] && [ -f /usr/share/wordlists/rockyou.txt.gz ] && gunzip -k /usr/share/wordlists/rockyou.txt.gz 2>/dev/null
+        if (set -o pipefail; stegseek "$filename" 2>&1 | tee "$stegseek_log") || (set -o pipefail; stegseek --seed "$filename" 2>&1 | tee "$stegseek_log"); then
             echo -e "${bold_green}[SUCCESS] Stegseek completed. Results saved in: ${bold_yellow}$stegseek_log${nc}"
         else
             echo -e "${bold_red}[ERROR] Stegseek failed to process the file.${nc}"
@@ -1133,24 +1178,24 @@ function automation_function() {
         mkdir -p "$vol_dir"
             
         # OS Detection
-        if vol -f "$original_dir/$filename" windows.info >/dev/null 2>&1; then
+        if vol -f "$filename" windows.info >/dev/null 2>&1; then
             local os_type="Windows"
             echo -e "${bold_green}[SUCCESS] Detected OS: ${bold_yellow}Windows${nc}"
             # Windows
-            vol -f "$original_dir/$filename" windows.info | tee "$vol_dir/windows_info.txt"
-            vol -f "$original_dir/$filename" windows.pslist | tee "$vol_dir/process_list.txt"
-            vol -f "$original_dir/$filename" windows.netscan | tee "$vol_dir/network_connections.txt"
-            vol -f "$original_dir/$filename" windows.registry.printkey | tee "$vol_dir/registry_info.txt"
-            vol -f "$original_dir/$filename" windows.malfind | tee "$vol_dir/malware_findings.txt"
-        elif vol -f "$original_dir/$filename" linux.pslist >/dev/null 2>&1; then
+            vol -f "$filename" windows.info | tee "$vol_dir/windows_info.txt"
+            vol -f "$filename" windows.pslist | tee "$vol_dir/process_list.txt"
+            vol -f "$filename" windows.netscan | tee "$vol_dir/network_connections.txt"
+            vol -f "$filename" windows.registry.printkey | tee "$vol_dir/registry_info.txt"
+            vol -f "$filename" windows.malfind | tee "$vol_dir/malware_findings.txt"
+        elif vol -f "$filename" linux.pslist >/dev/null 2>&1; then
             local os_type="Linux"
             echo -e "${bold_green}[SUCCESS] Detected OS: ${bold_yellow}Linux${nc}"
             # Linux
-            vol -f "$original_dir/$filename" linux.pslist | tee "$vol_dir/process_list.txt"
-            vol -f "$original_dir/$filename" linux.bash | tee "$vol_dir/bash_history.txt"
-            vol -f "$original_dir/$filename" linux.sockstat | tee "$vol_dir/network_connections.txt"
-            vol -f "$original_dir/$filename" linux.check_modules | tee "$vol_dir/kernel_modules.txt"
-            vol -f "$original_dir/$filename" linux.check_tty | tee "$vol_dir/tty_activity.txt"
+            vol -f "$filename" linux.pslist | tee "$vol_dir/process_list.txt"
+            vol -f "$filename" linux.bash | tee "$vol_dir/bash_history.txt"
+            vol -f "$filename" linux.sockstat | tee "$vol_dir/network_connections.txt"
+            vol -f "$filename" linux.check_modules | tee "$vol_dir/kernel_modules.txt"
+            vol -f "$filename" linux.check_tty | tee "$vol_dir/tty_activity.txt"
         else
             echo -e "${bold_red}[-] Unable to detect OS type automatically.${nc}"
         fi
@@ -1164,8 +1209,10 @@ function automation_function() {
         echo -e "${bold_green}[INFO] Zipping the entire Automation folder...${nc}"
         local zip_target="Engineer/${base_file_name_no_ext}_Automation.zip"
         
-        if [ -d "Engineer/${filename}/Automation" ]; then
-            (cd "Engineer/${filename}" && zip -r "../../$zip_target" Automation &>/dev/null)
+        if [ -d "Engineer/${base_file_name}/Automation" ]; then
+            local abs_zip_target
+            abs_zip_target="$(pwd)/$zip_target"
+            (cd "Engineer/${base_file_name}" && zip -r "$abs_zip_target" Automation &>/dev/null)
             
             if [ $? -eq 0 ]; then
                 echo -e "${bold_green}[SUCCESS] Automation folder zipped to: ${bold_yellow}$zip_target${nc}"
@@ -1173,7 +1220,7 @@ function automation_function() {
                 echo -e "${bold_red}[ERROR] Failed to zip the Automation folder.${nc}"
             fi
         else
-            echo -e "${bold_red}[ERROR] Directory to zip not found: Engineer/${filename}/Automation. Zipping skipped.${nc}"
+            echo -e "${bold_red}[ERROR] Directory to zip not found: Engineer/${base_file_name}/Automation. Zipping skipped.${nc}"
         fi
 
         echo -e "${bold_yellow}[STATS] Total automation completed in ${total_elapsed_time} seconds.${nc}"
