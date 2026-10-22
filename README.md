@@ -7,7 +7,7 @@
 [![Language](https://img.shields.io/badge/GNU_Bash-1%2C246_LOC-d4a359?style=for-the-badge&logo=gnubash&logoColor=white&labelColor=06090e)](Engineer.sh)
 [![Memory Engine](https://img.shields.io/badge/Volatility_3-Windows_%26_Linux-4d88c4?style=for-the-badge&logo=linux&logoColor=white&labelColor=06090e)](Engineer.sh)
 [![Triage Suite](https://img.shields.io/badge/Dispatcher-13_Interactive_Options-c9654b?style=for-the-badge&logo=kalilinux&logoColor=white&labelColor=06090e)](Engineer.sh)
-[![Documentation](https://img.shields.io/badge/Report-Engineer.pdf-56d364?style=for-the-badge&logo=readthedocs&logoColor=white&labelColor=06090e)](Engineer.pdf)
+[![Forensic Dossier](https://img.shields.io/badge/Forensic_Dossier-PDF_(13_Pages)-56d364?style=for-the-badge&logo=readthedocs&logoColor=white&labelColor=06090e)](docs/Engineer_Portfolio.pdf)
 
 </div>
 
@@ -26,9 +26,9 @@
 </p>
 
 <p align="center">
-  <img src="assets/sec_3_walkthrough.svg" alt="III · Live Execution Proof & Forensic PoC Gallery" width="100%" />
-  <img src="assets/evidence/poc_plate_1_carving_and_strings.png" alt="PoC Plate 1 — Interactive File Browser, Auto-Installer, Bulk Extractor & Strings Credential Filter" width="100%" />
-  <img src="assets/evidence/poc_plate_2_volatility_and_automation.png" alt="PoC Plate 2 — Volatility 3 Process List, Network Sockets, Registry Extraction & Option 11 Automation ZIP" width="100%" />
+  <img src="assets/sec_3_walkthrough.svg" alt="III · Live Execution Proof &amp; Forensic PoC Gallery" width="100%" />
+  <a href="docs/Engineer_Portfolio.pdf" title="Open Engineer Technical Portfolio Dossier (13-Page PDF)"><img src="assets/evidence/poc_plate_1_carving_and_strings.png" alt="PoC Plate 1 — Interactive File Browser, Auto-Installer, Bulk Extractor &amp; Strings Credential Filter" width="100%" /></a>
+  <a href="docs/Engineer_Portfolio.pdf" title="Open Engineer Technical Portfolio Dossier (13-Page PDF)"><img src="assets/evidence/poc_plate_2_volatility_and_automation.png" alt="PoC Plate 2 — Volatility 3 Process List, Network Sockets, Registry Extraction &amp; Option 11 Automation ZIP" width="100%" /></a>
 </p>
 
 <p align="center">
