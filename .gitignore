@@ -1,0 +1,3 @@
+# Ignore forensic triage output directory and archives
+Engineer/
+*.zip
