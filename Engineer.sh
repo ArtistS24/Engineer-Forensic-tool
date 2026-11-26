@@ -130,7 +130,7 @@ function file_check() {
         echo -e "${bold_white}The current working directory is: ${bold_yellow}$(pwd)${nc}"
         echo
         echo -e "${bold_purple}To exit the program, type 'exit'${nc}"
-        echo -e "${bold_purple}To move to a different directory, type the name of the directory. <directory>'${nc}" 
+        echo -e "${bold_purple}To move to a different directory, type the name of the directory: <directory>${nc}" 
 
         if [ "$ls_visible" = true ]; then
             echo -e "${bold_white}You're viewing the content of the directory: ${bold_yellow}$(pwd)${nc}"
@@ -588,12 +588,17 @@ function scalpel_function() {
                 fi
                 start_time=$(date +%s)
                 echo -e "${bold_green}[INFO] Running Scalpel...${nc}"
-                grep -Eq '^[[:space:]]*[^#[:space:]]' /etc/scalpel/scalpel.conf 2>/dev/null || sed -i -E 's/^#[[:space:]]*(gif|jpg|png|pdf|zip)[[:space:]]/\1\t/I' /etc/scalpel/scalpel.conf 2>/dev/null
-                if scalpel "$filename" -o "$output_dir" &>/dev/null; then
+                # Use a temporary scalpel config so host /etc/scalpel/scalpel.conf is never modified
+                local tmp_scalpel_conf
+                tmp_scalpel_conf=$(mktemp /tmp/scalpel.XXXXXX.conf)
+                cp /etc/scalpel/scalpel.conf "$tmp_scalpel_conf" 2>/dev/null || true
+                grep -Eq '^[[:space:]]*[^#[:space:]]' "$tmp_scalpel_conf" 2>/dev/null || sed -i -E 's/^#[[:space:]]*(gif|jpg|png|pdf|zip)[[:space:]]/\1\t/I' "$tmp_scalpel_conf" 2>/dev/null
+                if scalpel -c "$tmp_scalpel_conf" "$filename" -o "$output_dir" &>/dev/null; then
                     echo -e "${bold_green}[SUCCESS] Scalpel completed. Results saved in: ${bold_yellow}$output_dir${nc}"
                 else
-                    echo -e "${bold_red}[ERROR] Scalpel failed (check /etc/scalpel/scalpel.conf rules).${nc}"
+                    echo -e "${bold_red}[ERROR] Scalpel failed (check scalpel rules).${nc}"
                 fi
+                rm -f "$tmp_scalpel_conf"
                 ;;
             2)
                 return
@@ -664,7 +669,7 @@ function strings_function() {
                         if [ -z "$strings_options" ]; then
                             strings "$filename" | tee "$output_dir/strings_${base_file_name}_${sanitized_strings_options}.log"
                         else
-                            strings "$filename" | grep -a "$strings_options" | tee "$output_dir/strings_${base_file_name}_${sanitized_strings_options}.log"
+                            strings "$filename" | grep -a -- "$strings_options" | tee "$output_dir/strings_${base_file_name}_${sanitized_strings_options}.log"
                         fi
 
                         echo -e "${bold_green}[INFO] Strings output saved to: ${bold_yellow}$output_dir/strings_${base_file_name}_${sanitized_strings_options}.log${nc}"
@@ -673,7 +678,7 @@ function strings_function() {
                         if [ -z "$strings_options" ]; then
                             strings "$filename"
                         else
-                            strings "$filename" | grep -a "$strings_options"
+                            strings "$filename" | grep -a -- "$strings_options"
                         fi
                     fi
                     end_time=$(date +%s)
@@ -709,7 +714,7 @@ function dd_function() {
     case $dd_choice in
         1)  
             binwalk "$filename" 
-            echo -e "${bold_green}[INFO] Please note the offsets from the hexdump above.${nc}"
+            echo -e "${bold_green}[INFO] Please note the offsets from the binwalk scan above.${nc}"
             echo -e "${bold_yellow}[INFO] You can use the offsets to extract a specific file.${nc}"
             read -p "$(echo -e "${bold_yellow}[INPUT] Enter the start offset (in bytes): ${nc}")" start_offset
             read -p "$(echo -e "${bold_yellow}[INPUT] Enter the end offset (in bytes): ${nc}")" end_offset
@@ -934,10 +939,16 @@ function vol_function() {
 
                             if [ -n "$plugin" ]; then
                                 if $save; then
-                                    vol -f "$filename" "$plugin" 2>/dev/null | tee "$output_dir/registry_info_${base_file_name}.txt"
+                                    {
+                                        echo "=== Root Registry Hives ==="
+                                        vol -f "$filename" "$plugin" 2>/dev/null
+                                        echo -e "\n=== Run Persistence Keys ==="
+                                        vol -f "$filename" "$plugin" --key "Software\\Microsoft\\Windows\\CurrentVersion\\Run" 2>/dev/null
+                                    } | tee "$output_dir/registry_info_${base_file_name}.txt"
                                     echo -e "${bold_green}[SUCCESS] Registry information saved to: ${bold_yellow}$output_dir/registry_info_${base_file_name}.txt${nc}"
                                 else
                                     vol -f "$filename" "$plugin" 2>/dev/null
+                                    vol -f "$filename" "$plugin" --key "Software\\Microsoft\\Windows\\CurrentVersion\\Run" 2>/dev/null
                                 fi
                             fi
                             ;;
@@ -1140,12 +1151,16 @@ function automation_function() {
         if [ "$(ls -A "$scalpel_dir" 2>/dev/null)" ]; then
             rm -rf "${scalpel_dir:?}"/*
         fi
-        grep -Eq '^[[:space:]]*[^#[:space:]]' /etc/scalpel/scalpel.conf 2>/dev/null || sed -i -E 's/^#[[:space:]]*(gif|jpg|png|pdf|zip)[[:space:]]/\1\t/I' /etc/scalpel/scalpel.conf 2>/dev/null
-        if scalpel "$filename" -o "$scalpel_dir" 2>/dev/null; then
+        local tmp_scalpel_conf
+        tmp_scalpel_conf=$(mktemp /tmp/scalpel.XXXXXX.conf)
+        cp /etc/scalpel/scalpel.conf "$tmp_scalpel_conf" 2>/dev/null || true
+        grep -Eq '^[[:space:]]*[^#[:space:]]' "$tmp_scalpel_conf" 2>/dev/null || sed -i -E 's/^#[[:space:]]*(gif|jpg|png|pdf|zip)[[:space:]]/\1\t/I' "$tmp_scalpel_conf" 2>/dev/null
+        if scalpel -c "$tmp_scalpel_conf" "$filename" -o "$scalpel_dir" 2>/dev/null; then
             echo -e "${bold_green}[INFO] Scalpel completed. Results saved in: ${bold_yellow}$scalpel_dir${nc}"
         else
             echo -e "${bold_red}[ERROR] Scalpel failed.${nc}"
         fi
+        rm -f "$tmp_scalpel_conf"
         echo -e "${bold_yellow}---------------------------------------------------------------------------------${nc}"
 
         # Strings
@@ -1185,7 +1200,12 @@ function automation_function() {
             vol -f "$filename" windows.info | tee "$vol_dir/windows_info.txt"
             vol -f "$filename" windows.pslist | tee "$vol_dir/process_list.txt"
             vol -f "$filename" windows.netscan | tee "$vol_dir/network_connections.txt"
-            vol -f "$filename" windows.registry.printkey | tee "$vol_dir/registry_info.txt"
+            {
+                echo "=== Root Registry Hives ==="
+                vol -f "$filename" windows.registry.printkey 2>/dev/null
+                echo -e "\n=== Run Persistence Keys ==="
+                vol -f "$filename" windows.registry.printkey --key "Software\\Microsoft\\Windows\\CurrentVersion\\Run" 2>/dev/null
+            } | tee "$vol_dir/registry_info.txt"
             vol -f "$filename" windows.malfind | tee "$vol_dir/malware_findings.txt"
         elif vol -f "$filename" linux.pslist >/dev/null 2>&1; then
             local os_type="Linux"
@@ -1210,11 +1230,14 @@ function automation_function() {
         local zip_target="Engineer/${base_file_name_no_ext}_Automation.zip"
         
         if [ -d "Engineer/${base_file_name}/Automation" ]; then
+            # Record SHA-256 hash of input evidence inside Automation bundle
+            sha256sum "$filename" > "Engineer/${base_file_name}/Automation/sha256_manifest.txt" 2>/dev/null || true
             local abs_zip_target
             abs_zip_target="$(pwd)/$zip_target"
             (cd "Engineer/${base_file_name}" && zip -r "$abs_zip_target" Automation &>/dev/null)
             
             if [ $? -eq 0 ]; then
+                sha256sum "$zip_target" >> "Engineer/${base_file_name}/Automation/sha256_manifest.txt" 2>/dev/null || true
                 echo -e "${bold_green}[SUCCESS] Automation folder zipped to: ${bold_yellow}$zip_target${nc}"
             else
                 echo -e "${bold_red}[ERROR] Failed to zip the Automation folder.${nc}"
